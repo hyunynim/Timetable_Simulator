@@ -12,3 +12,33 @@ using namespace ExcelFormat;
 
 #include"utils.h"
 #include"MCMF.h"
+#include"ExcelReadWrite.h"
+struct LECTURE {
+	string name;
+	string prof;
+};
+
+#ifndef __GLOBAL_VARIABLES__
+#define __GLOBAL_VARIABLES__
+extern char globalMsg[1010];
+extern map<pair<int, int>, LECTURE> decomp;
+extern map<string, int> prof2Idx;
+extern map<string, int> lecPerProf;
+
+extern vector<string> profList;
+extern vector<vector<int>> preference;
+extern int labCount;
+extern int dayNodeNumber;
+
+extern const int source;
+extern const int sink;
+extern const int dayCount;
+extern const int profNodeBegin;
+extern const int dayNodeBegin;
+extern const int labNodeBegin;
+extern vector<string> dayName;
+extern vector<string> timeName;
+extern vector<vector<int>> timetable;
+
+extern MCMF mcmf;
+#endif
