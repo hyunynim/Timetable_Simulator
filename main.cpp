@@ -22,7 +22,7 @@ const int dayNodeBegin = 200;
 const int labNodeBegin = 300;
 vector<string> dayName = { "월", "화", "수", "목", "금" };
 vector<string> timeName = { "오전", "오후" };
-vector<vector<int>> timetable;
+vector<vector<int>> timetable(dayCount * 2);
 
 MCMF mcmf;
 
@@ -52,11 +52,12 @@ void MakeGraph() {
 int main() {
 	printf("강의실 수: ");
 	scanf("%d", &labCount);
+
 	ExcelRead("lec.xls");
 	MakeGraph();
+
 	int ans = mcmf.Match(source, sink);	//source, sink
 
-	timetable.resize(dayCount * 2);
 	for (int i = 0; i < profList.size(); ++i) {
 		int cur = profNodeBegin + i;
 		int lecCount = lecPerProf[profList[i]];
