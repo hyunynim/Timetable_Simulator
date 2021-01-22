@@ -27,9 +27,9 @@ extern map<string, int> lecPerProf;
 
 extern vector<string> profList;
 extern vector<vector<int>> preference;
-extern int labCount;
 extern int dayNodeNumber;
 
+extern const int labCount;
 extern const int source;
 extern const int sink;
 extern const int dayCount;

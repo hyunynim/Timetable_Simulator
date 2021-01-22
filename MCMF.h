@@ -8,8 +8,13 @@ class MCMF {
 	struct EDGE { int pos, cap, rev, cost; };
 	int dist[maxNode], pa[maxNode], pe[maxNode];
 	bool inque[maxNode];
+	void MakeGraph();
 
 public:
+	MCMF();
+	MCMF(char* fileName);
+	MCMF(const char* fileName);
+
 	vector<EDGE> gph[maxNode];
 	void clear();
 	void AddEdge(int s, int e, int cap, int cost);	//x: cap, c: cost

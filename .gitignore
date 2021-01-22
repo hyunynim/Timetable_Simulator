@@ -45,3 +45,6 @@ res.xls
 *.pdb
 Timetable_Simulator.vcxproj
 *.txt
+res2.xls
+*.ilk
+*.idb

@@ -11,9 +11,9 @@ map<string, int> lecPerProf;
 
 vector<string> profList;
 vector<vector<int>> preference;
-int labCount;
 int dayNodeNumber = 200;
 
+const int labCount = 4;
 const int source = 0;
 const int sink = 1000;
 const int dayCount = 5;
@@ -24,37 +24,11 @@ vector<string> dayName = { "월", "화", "수", "목", "금" };
 vector<string> timeName = { "오전", "오후" };
 vector<vector<int>> timetable(dayCount * 2);
 
-MCMF mcmf;
+MCMF mcmf("lec.xls");
 
-void MakeGraph() {
-	int count = 0;
-	for (int i = 0; i < profList.size(); ++i) {
-		mcmf.AddEdge(source, profNodeBegin + i, lecPerProf[profList[i]], 0);
-		for (int j = 0; j < dayCount; ++j) {
-			for (int k = 0; k < 2; ++k) {
-				int profIdx = prof2Idx[profList[i]];
-				int dayIdx = dayNodeBegin + k * 5 + j;
-
-				mcmf.AddEdge(profNodeBegin + i, dayIdx, 1, -preference[profIdx][dayIdx - dayNodeBegin]);
-			}
-		}
-	}
-
-	count = 0;
-	for (int i = 0; i < dayCount; ++i)
-		for (int j = 0; j < 2; ++j)
-			for (int k = 0; k < labCount; ++k)
-				mcmf.AddEdge(dayNodeBegin + j * 5 + i, labNodeBegin + count++, 1, 0);
-
-	for (int i = 0; i < labCount * dayCount * 2; ++i)
-		mcmf.AddEdge(labNodeBegin + i, sink, 1, 0);
-}
 int main() {
-	printf("강의실 수: ");
-	scanf("%d", &labCount);
-
-	ExcelRead("lec.xls");
-	MakeGraph();
+	//printf("강의실 수: ");
+	//scanf("%d", &labCount);
 
 	int ans = mcmf.Match(source, sink);	//source, sink
 
