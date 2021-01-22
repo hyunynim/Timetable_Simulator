@@ -1,73 +1,15 @@
-#define DEBUGMODE
+#include"main.h"
 
-#include<bits/stdc++.h>
-#include "extern/ExcelFormat.h"
-#include <atlconv.h>
-using namespace ExcelFormat;
-using namespace std;
-const int MAXN = 1010;
-struct mincostflow {
-	struct edg { int pos, cap, rev, cost; };
-	vector<edg> gph[MAXN];
-	void clear() {
-		for (int i = 0; i < MAXN; i++) gph[i].clear();
-	}
-	void add_edge(int s, int e, int x, int c) {	//x: cap, c: cost
-		gph[s].push_back({ e, x, (int)gph[e].size(), c });
-		gph[e].push_back({ s, 0, (int)gph[s].size() - 1, -c });
-	}
-	int dist[MAXN], pa[MAXN], pe[MAXN];
-	bool inque[MAXN];
-	bool spfa(int src, int sink) {
-		memset(dist, 0x3f, sizeof(dist));
-		memset(inque, 0, sizeof(inque));
-		queue<int> que;
-		dist[src] = 0;
-		inque[src] = 1;
-		que.push(src);
-		bool ok = 0;
-		while (!que.empty()) {
-			int x = que.front();
-			que.pop();
-			if (x == sink) ok = 1;
-			inque[x] = 0;
-			for (int i = 0; i < gph[x].size(); i++) {
-				edg e = gph[x][i];
-				if (e.cap > 0 && dist[e.pos] > dist[x] + e.cost) {
-					dist[e.pos] = dist[x] + e.cost;
-					pa[e.pos] = x;
-					pe[e.pos] = i;
-					if (!inque[e.pos]) {
-						inque[e.pos] = 1;
-						que.push(e.pos);
-					}
-				}
-			}
-		}
-		return ok;
-	}
-	int match(int src, int sink) {
-		int ret = 0;
-		while (spfa(src, sink)) {
-			int cap = 1e9;
-			for (int pos = sink; pos != src; pos = pa[pos])
-				cap = min(cap, gph[pa[pos]][pe[pos]].cap);
-
-			ret += dist[sink] * cap;
-			for (int pos = sink; pos != src; pos = pa[pos]) {
-				int rev = gph[pa[pos]][pe[pos]].rev;
-				gph[pa[pos]][pe[pos]].cap -= cap;
-				gph[pos][rev].cap += cap;
-			}
-		}
-		return ret;
-	}
-}mcmf;
+void PrintLog();
+template<typename T> void PrintLog(T log);
+template<typename T, typename... Args> void PrintLog(T log, Args... args);
 
 struct LECTURE {
 	string name;
 	string prof;
 };
+
+
 char globalMsg[1010];
 map<pair<int, int>, LECTURE> decomp;
 map<string, int> prof2Idx;
@@ -88,31 +30,15 @@ vector<string> dayName = { "월", "화", "수", "목", "금" };
 vector<string> timeName = { "오전", "오후" };
 vector<vector<int>> timetable;
 
-//lab - 100~
-//prof - 500~
+MCMF mcmf;
 
-int Char2Int(char* src) {
-	int res = 0;
-	for (int i = 0; src[i]; ++i)
-		res = res * 10 + src[i] - '0';
-	return res;
-}
-string Wstr2Str(wstring src)
-{
-	USES_CONVERSION;
-	return string(W2A(src.c_str()));
-};
-wstring Str2Wstr(string src) {
-	USES_CONVERSION;
-	return wstring(A2W(src.c_str()));
-}
 bool ExcelRead(const char* fileName) {
 	FILE* fp = fopen(fileName, "r");
 	if (fp == NULL) return 0;
 	fclose(fp);
 	BasicExcel xls(fileName);
-	BasicExcelWorksheet* sheet1 = xls.GetWorksheet("Lecture");	//Lecture
-	BasicExcelWorksheet* sheet2 = xls.GetWorksheet("Preference");	//Preference
+	BasicExcelWorksheet* sheet1 = xls.GetWorksheet("Lecture");
+	BasicExcelWorksheet* sheet2 = xls.GetWorksheet("Preference");
 	int no, lecCode, classCode;
 	string lecName, prof, prac;
 	wstring wstrTmp;
@@ -151,10 +77,9 @@ bool ExcelRead(const char* fileName) {
 
 		profList.push_back(prof);
 
-		if (prac[0] == 'Y') {
+		if (prac[0] == 'Y') 
 			++lecPerProf[prof];
-			//lab.push_back({ lecNo, code });
-		}
+		
 	}
 	sort(profList.begin(), profList.end());
 	profList.erase(unique(profList.begin(), profList.end()), profList.end());
@@ -212,10 +137,9 @@ bool ExcelWrite(const char* fileName) {
 	}
 
 	for (int i = 1; i <= 9; ++i) {
-		char tmp[22];
-		sprintf(tmp, "%d교시", i);
+		sprintf(globalMsg, "%d교시", i);
 		cell = sheet->Cell(i, 0);
-		cell->Set(Str2Wstr(string(tmp)).c_str());
+		cell->Set(Str2Wstr(string(globalMsg)).c_str());
 		cell->SetFormat(cFmt);
 	}
 
@@ -242,13 +166,13 @@ bool ExcelWrite(const char* fileName) {
 void MakeGraph() {
 	int count = 0;
 	for (int i = 0; i < profList.size(); ++i) {
-		mcmf.add_edge(source, profNodeBegin + i, lecPerProf[profList[i]], 0);
+		mcmf.AddEdge(source, profNodeBegin + i, lecPerProf[profList[i]], 0);
 		for (int j = 0; j < dayCount; ++j) {
 			for (int k = 0; k < 2; ++k) {
 				int profIdx = prof2Idx[profList[i]];
 				int dayIdx = dayNodeBegin + k * 5 + j;
 
-				mcmf.add_edge(profNodeBegin + i, dayIdx, 1, -preference[profIdx][dayIdx - dayNodeBegin]);
+				mcmf.AddEdge(profNodeBegin + i, dayIdx, 1, -preference[profIdx][dayIdx - dayNodeBegin]);
 			}
 		}
 	}
@@ -257,32 +181,17 @@ void MakeGraph() {
 	for (int i = 0; i < dayCount; ++i)
 		for (int j = 0; j < 2; ++j)
 			for (int k = 0; k < labCount; ++k)
-				mcmf.add_edge(dayNodeBegin + j * 5 + i, labNodeBegin + count++, 1, 0);
+				mcmf.AddEdge(dayNodeBegin + j * 5 + i, labNodeBegin + count++, 1, 0);
 
 	for (int i = 0; i < labCount * dayCount * 2; ++i)
-		mcmf.add_edge(labNodeBegin + i, sink, 1, 0);
-}
-void PrintLog() {}
-template<typename T>
-void PrintLog(T log) {
-#ifdef DEBUGMODE
-	cout << log << '\n';
-#endif
-}
-template<typename T, typename... Args>
-void PrintLog(T log, Args... args) {
-#ifdef DEBUGMODE
-	cout << log << " ";
-	PrintLog(args...);
-#endif
+		mcmf.AddEdge(labNodeBegin + i, sink, 1, 0);
 }
 int main() {
-	//FileRead();
 	printf("강의실 수: ");
 	scanf("%d", &labCount);
 	ExcelRead("lec.xls");
 	MakeGraph();
-	int ans = mcmf.match(0, 1000);	//source, sink
+	int ans = mcmf.Match(source, sink);	//source, sink
 
 	timetable.resize(dayCount * 2);
 	for (int i = 0; i < profList.size(); ++i) {
@@ -300,4 +209,21 @@ int main() {
 		}
 	}
 	ExcelWrite("res.xls");
+}
+
+void PrintLog() {}
+
+template<typename T>
+void PrintLog(T log) {
+#ifdef DEBUGMODE
+	cout << log << '\n';
+#endif
+}
+
+template<typename T, typename... Args>
+void PrintLog(T log, Args... args) {
+#ifdef DEBUGMODE
+	cout << log << " ";
+	PrintLog(args...);
+#endif
 }

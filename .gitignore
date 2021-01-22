@@ -44,3 +44,4 @@ res.xls
 *.log
 *.pdb
 Timetable_Simulator.vcxproj
+*.txt
