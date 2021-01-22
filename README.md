@@ -1,5 +1,5 @@
 # Timetable_Simulator
  Seoultech computer science&engineering timetable simulator
 
-#Todo
+# Todo
  - Global variable refactoring
