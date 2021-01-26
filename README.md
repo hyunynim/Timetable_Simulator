@@ -6,5 +6,5 @@
  - [ ]Excel writing form refactoring
  - [ ]Timetable making function
  - [ ]Writing "Makefile" for linux
-  - [ ]It includes converting character to wCharacter function
+   - [ ]It includes converting character to wCharacter function
   
