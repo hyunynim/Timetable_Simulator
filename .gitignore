@@ -39,12 +39,10 @@ res.xls
 *.tlog
 *.iobj
 *.ipdb
-*.user
-*.filters
 *.log
 *.pdb
-Timetable_Simulator.vcxproj
 *.txt
 res2.xls
 *.ilk
 *.idb
+*.zip
