@@ -44,9 +44,10 @@ bool ExcelRead(const char* fileName) {
 
 		profList.push_back(prof);
 
-		if (prac[0] == 'Y')
+		if (prac[0] == 'Y') {
 			++lecPerProf[prof];
-
+			++totalLecCount;
+		}
 	}
 	sort(profList.begin(), profList.end());
 	profList.erase(unique(profList.begin(), profList.end()), profList.end());
@@ -83,11 +84,10 @@ bool ExcelWrite(const char* fileName) {
 	//int sheetNum = dayCount;
 	//xls.New(sheetNum);
 
-	//Code for one sheet
-	xls.New(1);
+	xls.New(2);
 
 	BasicExcelWorksheet* sheet = xls.GetWorksheet(0);
-
+	sheet->Rename("Timetable");
 	XLSFormatManager fmtMgr(xls);
 	CellFormat cFmt(fmtMgr);
 	BasicExcelCell* cell;
@@ -127,6 +127,47 @@ bool ExcelWrite(const char* fileName) {
 		}
 	}
 
+	sheet = xls.GetWorksheet(1);
+	sheet->Rename("Preference");
+	
+	//Base form for timetable
+	cFmt.set_format_string(XLS_FORMAT_TEXT);
+	cFmt.set_font(ExcelFont().set_weight(FW_BOLD));
+	cFmt.set_alignment(EXCEL_HALIGN_CENTRED);
+	sheet->MergeCells(0, 1, 1, 10);
+	cell = sheet->Cell(0, 1);
+	cell->Set(Str2Wstr(string("선호도")).c_str());
+	cell->SetFormat(cFmt);
+	for (int i = 0; i < dayCount; ++i) {
+		sheet->MergeCells(1, i * 2 + 1, 1, 2);
+		cell = sheet->Cell(1, i * 2 + 1);
+		cell->Set(Str2Wstr(dayName[i]).c_str());
+		cell->SetFormat(cFmt);
+
+		cell = sheet->Cell(2, i * 2 + 1);
+		cell->Set(Str2Wstr("오전").c_str());
+		cell->SetFormat(cFmt);
+
+		cell = sheet->Cell(2, i * 2 + 2);
+		cell->Set(Str2Wstr("오후").c_str());
+		cell->SetFormat(cFmt);
+	}
+
+	for (int i = 0; i < profList.size(); ++i) {
+		cell = sheet->Cell(i + 3, 0);
+		cell->Set(Str2Wstr(profList[i]).c_str());
+		cell->SetFormat(cFmt);
+	}
+
+	//Data
+	cFmt.set_font(ExcelFont().set_weight(FW_NORMAL));
+	for(int i = 1; i < preference.size(); ++i){
+		for (int j = 0; j < preference[i].size(); ++j) {
+			cell = sheet->Cell(i + 2, j + 1);
+			cell->Set(preference[i][j]);
+			cell->SetFormat(cFmt);
+		}
+	}
 	xls.SaveAs(fileName);
 	return 1;
 }

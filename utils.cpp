@@ -17,3 +17,21 @@ wstring Str2Wstr(string src) {
 	USES_CONVERSION;
 	return wstring(A2W(src.c_str()));
 }
+
+void RandomPreference(int sum) {
+	preference.clear();
+	preference.resize(profList.size() + 1);
+	int origin = sum;
+	for (int i = 1; i< preference.size(); ++i){
+		sum = origin;
+		for (int j = 0; j < dayCount * 2; ++j) {
+			auto randomGen = ud(0, sum);
+
+			int cur = randomGen(gen);
+
+			sum -= cur;
+			preference[i].push_back(cur);
+		}
+		random_shuffle(preference[i].begin(), preference[i].end());
+	}
+}

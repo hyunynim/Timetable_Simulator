@@ -14,6 +14,8 @@ public:
 	MCMF();
 	MCMF(char* fileName);
 	MCMF(const char* fileName);
+	MCMF(char* fileName, bool flag);
+	MCMF(const char* fileName, bool flag);
 
 	vector<EDGE> gph[maxNode];
 	void clear();

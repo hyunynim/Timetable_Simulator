@@ -13,6 +13,22 @@ MCMF::MCMF(const char* fileName) {
 	ExcelRead(fileName);
 	MakeGraph();
 }
+MCMF::MCMF(char* fileName, bool flag) {
+	ExcelRead(fileName);
+
+	if (flag)
+		RandomPreference(100);
+
+	MakeGraph();
+}
+MCMF::MCMF(const char* fileName, bool flag) {
+	ExcelRead(fileName);
+
+	if (flag)
+		RandomPreference(100);
+
+	MakeGraph();
+}
 void MCMF::AddEdge(int s, int e, int cap, int cost) {
 	gph[s].push_back({ e, cap, (int)gph[e].size(), cost });
 	gph[e].push_back({ s, 0, (int)gph[s].size() - 1, -cost });

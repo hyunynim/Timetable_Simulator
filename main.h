@@ -4,6 +4,7 @@
 #endif
 
 #include<bits/stdc++.h>
+#include<random>
 #include <atlconv.h>
 using namespace std;
 
@@ -28,6 +29,7 @@ extern map<string, int> lecPerProf;
 extern vector<string> profList;
 extern vector<vector<int>> preference;
 extern int dayNodeNumber;
+extern int totalLecCount;
 
 extern const int labCount;
 extern const int source;
@@ -41,4 +43,9 @@ extern vector<string> timeName;
 extern vector<vector<int>> timetable;
 
 extern MCMF mcmf;
+
+extern random_device rd;
+extern mt19937 gen;
 #endif
+
+typedef uniform_int_distribution<int> ud;

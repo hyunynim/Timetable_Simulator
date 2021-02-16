@@ -6,3 +6,4 @@
 int Char2Int(char* src);
 string Wstr2Str(wstring src);
 wstring Str2Wstr(string src);
+void RandomPreference(int sum);
