@@ -8,3 +8,6 @@
  - [ ] Timetable making function
  - [ ] Writing "Makefile" for linux
    - [ ] It includes converting character to wCharacter function
+
+# Update
+ - Add random preference mode
